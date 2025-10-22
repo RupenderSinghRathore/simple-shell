@@ -9,7 +9,7 @@ SRC = $(SRCDIR)/*.c
 all: $(TARGET)
 
 $(TARGET): $(SRC)
-	@mkdir -p $(TARGET)
+	@mkdir -p bin
 	$(CC) $(CFLAGS) $(SRC) -o $(TARGET)
 	@echo "Build done."
 

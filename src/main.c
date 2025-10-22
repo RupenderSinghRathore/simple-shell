@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/types.h>
+#include <sys/wait.h>
 #include <unistd.h>
 #include <wait.h>
 
@@ -12,6 +13,11 @@ int main(int argc, char *argv[]) {
 	int i;
 
 	while (1) {
+		int status, pre_pid;
+		while ((pre_pid = waitpid(-1, &status, WNOHANG)) > 0) {
+			printf("Background process exited with: %d\n", WEXITSTATUS(status));
+		}
+
 		// clear the input buffer
 		bzero(line, sizeof(line));
 
@@ -31,15 +37,15 @@ int main(int argc, char *argv[]) {
 
 		int background_process_flag = 0;
 		int last_idx = get_last_idx(tokens);
-		if (strcmp(tokens[last_idx], "&") == 0) { // if equal then
-			free(tokens[last_idx]);
-			tokens[last_idx] = NULL;
-			background_process_flag = 1;
-		}
+		// printf("index: %d\n", last_idx);
 
 		if (tokens[0] == NULL) {
 			freeToken(tokens);
 			continue;
+		} else if (strcmp(tokens[last_idx], "&") == 0) { // if equal then
+			free(tokens[last_idx]);
+			tokens[last_idx] = NULL;
+			background_process_flag = 1;
 		} else if (strcmp(tokens[0], "cd") == 0) {
 			char move_to_dir[MAX_DIR_SIZE];
 			if (tokens[1] == NULL) {
@@ -71,11 +77,14 @@ int main(int argc, char *argv[]) {
 			freeToken(tokens);
 			exit(1);
 		}
-		int status;
 
-		if (background_process_flag == 0)
-			wait(&status);
-		if (WIFEXITED(status)) {
+		if (background_process_flag == 0) {
+			// wait(&status);
+			pid = waitpid(pid, &status, 0);
+		} else {
+			pid = waitpid(pid, &status, WNOHANG);
+		}
+		if (!background_process_flag && WIFEXITED(status)) {
 			printf("EXITSTATUS: %d\n", WEXITSTATUS(status));
 		}
 		freeToken(tokens);
