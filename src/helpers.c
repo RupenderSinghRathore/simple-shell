@@ -1,9 +1,9 @@
 #include "ref.h"
-#include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <wait.h>
 
 void freeToken(char **tokens) {
 	for (int i = 0; tokens[i] != NULL; i++) {
@@ -70,5 +70,51 @@ bool handle_input(char *line) {
 		return false;
 	}
 	line[strlen(line)] = '\n'; // terminate with new line
+	return true;
+}
+
+void reap_backgound_procs(PROC_LIST *proc_list) {
+	int status, pre_pid;
+	while ((pre_pid = waitpid(-1, &status, WNOHANG)) > 0) {
+		for (int i = 0; i < proc_list->len; i++) {
+			if (proc_list->pids[i] == pre_pid) {
+				proc_list->pids[i] = 0;
+			}
+		}
+		clean_dead_proc(proc_list);
+		printf("Background process exited with: %d\n", WEXITSTATUS(status));
+	}
+}
+
+bool preprocess_commands(char **tokens, PROC_LIST *proc_list, char *curr_dir, bool *background_process_flag) {
+	int last_idx = get_last_idx(tokens);
+	if (tokens[0] == NULL) {
+		return false;
+	} else if (strcmp(tokens[last_idx], "&") == 0) { // if equal then
+		if (proc_list->len == MAX_PROC_COUNT) {
+			printf("Error Max processes running in background\n");
+			return false;
+		}
+		free(tokens[last_idx]);
+		tokens[last_idx] = NULL;
+		*background_process_flag = true;
+	} else if (strcmp(tokens[0], "cd") == 0) {
+		handle_cd(tokens, curr_dir);
+		return false;
+	}
+	return true;
+}
+
+bool execute_command(pid_t pid, char **tokens, PROC_LIST *proc_list) {
+	if (pid == -1) {
+		printf("Error!!\n");
+		return false;
+	} else if (pid == 0) {
+		int ok = execvp(tokens[0], tokens);
+		printf("xsh: command not found: %s\n", tokens[0]);
+		freeToken(tokens);
+		free_proc_list(proc_list);
+		exit(1);
+	}
 	return true;
 }

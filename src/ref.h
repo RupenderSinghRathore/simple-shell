@@ -1,4 +1,5 @@
 #include <stdbool.h>
+#include <unistd.h>
 
 #define MAX_INPUT_SIZE 1024
 #define MAX_TOKEN_SIZE 64
@@ -16,6 +17,9 @@ int get_last_idx(char **tokens);
 char **tokenize(char *line);
 void handle_cd(char **tokens, char *curr_dir);
 bool handle_input(char *line);
+void reap_backgound_procs(PROC_LIST *proc_list);
+bool preprocess_commands(char **tokens, PROC_LIST *proc_list, char *curr_dir, bool *background_process_flag);
+bool execute_command(pid_t pid, char **tokens, PROC_LIST *proc_list);
 
 // process_list
 PROC_LIST *init_proc_list(int n);
