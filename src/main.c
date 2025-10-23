@@ -10,32 +10,34 @@
 int main(int argc, char *argv[]) {
 	char line[MAX_INPUT_SIZE];
 	char **tokens = NULL;
+	PROC_LIST *proc_list = init_proc_list(MAX_PROC_COUNT);
 	int i;
 
 	while (1) {
 		int status, pre_pid;
 		while ((pre_pid = waitpid(-1, &status, WNOHANG)) > 0) {
+			for (i = 0; i < proc_list->len; i++) {
+				if (proc_list->pids[i] == pre_pid) {
+					proc_list->pids[i] = 0;
+				}
+			}
+			clean_dead_proc(proc_list);
 			printf("Background process exited with: %d\n", WEXITSTATUS(status));
 		}
-
-		// clear the input buffer
-		bzero(line, sizeof(line));
+		printf("len: %d\n", proc_list->len);
 
 		char curr_dir[MAX_DIR_SIZE];
 		getcwd(curr_dir, MAX_DIR_SIZE);
-
 		printf("%s $ ", curr_dir);
 
-		scanf("%[^\n]", line);
-		getchar();
-
-		if (strcmp(line, "exit") == 0) {
+		bzero(line, sizeof(line));
+		if (!handle_input(line)) {
 			break;
 		}
-		line[strlen(line)] = '\n'; // terminate with new line
+
 		tokens = tokenize(line);
 
-		int background_process_flag = 0;
+		bool background_process_flag = false;
 		int last_idx = get_last_idx(tokens);
 		// printf("index: %d\n", last_idx);
 
@@ -43,26 +45,15 @@ int main(int argc, char *argv[]) {
 			freeToken(tokens);
 			continue;
 		} else if (strcmp(tokens[last_idx], "&") == 0) { // if equal then
+			if (proc_list->len == MAX_PROC_COUNT) {
+				printf("Error Max processes running in background\n");
+				continue;
+			}
 			free(tokens[last_idx]);
 			tokens[last_idx] = NULL;
 			background_process_flag = 1;
 		} else if (strcmp(tokens[0], "cd") == 0) {
-			char move_to_dir[MAX_DIR_SIZE];
-			if (tokens[1] == NULL) {
-				// cd into home
-				strcpy(move_to_dir, getenv("HOME"));
-			} else if (tokens[1][0] != '/') {
-				// relative cd
-				strcpy(move_to_dir, curr_dir);
-				strcat(move_to_dir, "/");
-				strcat(move_to_dir, tokens[1]);
-			} else {
-				strcpy(move_to_dir, tokens[1]);
-			}
-			int ok = chdir(move_to_dir);
-			if (ok == -1) {
-				printf("cd: no such file or directory: %s\n", tokens[1]);
-			}
+			handle_cd(tokens, curr_dir);
 			freeToken(tokens);
 			continue;
 		}
@@ -75,19 +66,18 @@ int main(int argc, char *argv[]) {
 			int ok = execvp(tokens[0], tokens);
 			printf("xsh: command not found: %s\n", tokens[0]);
 			freeToken(tokens);
+			free_proc_list(proc_list);
 			exit(1);
 		}
-
-		if (background_process_flag == 0) {
-			// wait(&status);
-			pid = waitpid(pid, &status, 0);
+		if (background_process_flag) {
+			append_proc_list(proc_list, pid);
 		} else {
-			pid = waitpid(pid, &status, WNOHANG);
-		}
-		if (!background_process_flag && WIFEXITED(status)) {
+			// forground
+			pid = waitpid(pid, &status, 0);
 			printf("EXITSTATUS: %d\n", WEXITSTATUS(status));
 		}
 		freeToken(tokens);
 	}
+	free_proc_list(proc_list);
 	return 0;
 }
