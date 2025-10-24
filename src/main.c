@@ -2,7 +2,7 @@
 #include <strings.h>
 #include <unistd.h>
 
-int main(int argc, char *argv[]) {
+int main() {
 	char line[MAX_INPUT_SIZE];
 	char **tokens = NULL;
 	PROC_LIST *proc_list = init_proc_list(MAX_PROC_COUNT);
@@ -11,7 +11,7 @@ int main(int argc, char *argv[]) {
 		reap_backgound_procs(proc_list);
 
 		bzero(line, sizeof(line));
-		if (!handle_input(line)) {
+		if (!handle_input(line, proc_list)) {
 			break;
 		}
 

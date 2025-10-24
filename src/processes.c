@@ -19,9 +19,10 @@ void reap_backgound_procs(PROC_LIST *proc_list) {
 void reaping_and_bookkeeping(pid_t pid, PROC_LIST *proc_list, bool background_process_flag) {
 	if (background_process_flag) {
 		append_proc_list(proc_list, pid);
+
 	} else {
 		int status;
-		pid = waitpid(pid, &status, 0);
+		waitpid(pid, &status, 0);
 		printf("EXITSTATUS: %d\n", WEXITSTATUS(status));
 	}
 }

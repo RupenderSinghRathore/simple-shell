@@ -1,0 +1,86 @@
+[
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-c",
+      "-g",
+      "-Iinclude",
+      "-o",
+      "./bin/run",
+      "src/commands.c"
+    ],
+    "directory": "/home/kami-sama/lunaar/projects/simple-shell",
+    "file": "/home/kami-sama/lunaar/projects/simple-shell/src/commands.c",
+    "output": "/home/kami-sama/lunaar/projects/simple-shell/bin/run"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-c",
+      "-g",
+      "-Iinclude",
+      "-o",
+      "./bin/run",
+      "src/helpers.c"
+    ],
+    "directory": "/home/kami-sama/lunaar/projects/simple-shell",
+    "file": "/home/kami-sama/lunaar/projects/simple-shell/src/helpers.c",
+    "output": "/home/kami-sama/lunaar/projects/simple-shell/bin/run"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-c",
+      "-g",
+      "-Iinclude",
+      "-o",
+      "./bin/run",
+      "src/input.c"
+    ],
+    "directory": "/home/kami-sama/lunaar/projects/simple-shell",
+    "file": "/home/kami-sama/lunaar/projects/simple-shell/src/input.c",
+    "output": "/home/kami-sama/lunaar/projects/simple-shell/bin/run"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-c",
+      "-g",
+      "-Iinclude",
+      "-o",
+      "./bin/run",
+      "src/list.c"
+    ],
+    "directory": "/home/kami-sama/lunaar/projects/simple-shell",
+    "file": "/home/kami-sama/lunaar/projects/simple-shell/src/list.c",
+    "output": "/home/kami-sama/lunaar/projects/simple-shell/bin/run"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-c",
+      "-g",
+      "-Iinclude",
+      "-o",
+      "./bin/run",
+      "src/main.c"
+    ],
+    "directory": "/home/kami-sama/lunaar/projects/simple-shell",
+    "file": "/home/kami-sama/lunaar/projects/simple-shell/src/main.c",
+    "output": "/home/kami-sama/lunaar/projects/simple-shell/bin/run"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-c",
+      "-g",
+      "-Iinclude",
+      "-o",
+      "./bin/run",
+      "src/processes.c"
+    ],
+    "directory": "/home/kami-sama/lunaar/projects/simple-shell",
+    "file": "/home/kami-sama/lunaar/projects/simple-shell/src/processes.c",
+    "output": "/home/kami-sama/lunaar/projects/simple-shell/bin/run"
+  }
+]

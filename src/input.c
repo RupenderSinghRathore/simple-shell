@@ -10,7 +10,7 @@ char **tokenize(char *line) {
 	char token[MAX_TOKEN_SIZE];
 	int i, tokenIndex = 0, tokenNo = 0;
 
-	for (i = 0; i < strlen(line); i++) {
+	for (i = 0; i < (int)strlen(line); i++) {
 
 		char readChar = line[i];
 
@@ -29,7 +29,7 @@ char **tokenize(char *line) {
 	return tokens;
 }
 
-bool handle_input(char *line) {
+bool handle_input(char *line, PROC_LIST *proc_list) {
 	char curr_dir[MAX_DIR_SIZE];
 	getcwd(curr_dir, MAX_DIR_SIZE);
 	printf("%s $ ", curr_dir);
@@ -38,7 +38,8 @@ bool handle_input(char *line) {
 	getchar();
 
 	if (strcmp(line, "exit") == 0) {
-		// kill(pid, SIGINT);
+		for (int i = 0; i < proc_list->len; i++)
+			kill(proc_list->pids[i], SIGINT);
 		return false;
 	}
 	line[strlen(line)] = '\n'; // terminate with new line
