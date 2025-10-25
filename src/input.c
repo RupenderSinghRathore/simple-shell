@@ -29,11 +29,13 @@ char **tokenize(char *line) {
 	return tokens;
 }
 
-bool handle_input(char *line, PROC_LIST *proc_list) {
+void handle_prompt() {
 	char curr_dir[MAX_DIR_SIZE];
 	getcwd(curr_dir, MAX_DIR_SIZE);
 	printf("%s $ ", curr_dir);
+}
 
+bool handle_input(char *line, PROC_LIST *proc_list) {
 	scanf("%[^\n]", line);
 	getchar();
 

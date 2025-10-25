@@ -23,6 +23,7 @@ void reaping_and_bookkeeping(pid_t pid, PROC_LIST *proc_list, bool background_pr
 	} else {
 		int status;
 		waitpid(pid, &status, 0);
-		printf("EXITSTATUS: %d\n", WEXITSTATUS(status));
+		if (WEXITSTATUS(status) != 0)
+			printf("EXITSTATUS: %d\n", WEXITSTATUS(status));
 	}
 }

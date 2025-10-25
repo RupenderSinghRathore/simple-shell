@@ -1,4 +1,5 @@
 #include "ref.h"
+#include <signal.h>
 #include <strings.h>
 #include <unistd.h>
 
@@ -8,8 +9,10 @@ int main() {
 	PROC_LIST *proc_list = init_proc_list(MAX_PROC_COUNT);
 
 	while (1) {
+		signal(SIGINT, handle_ctrl_c);
 		reap_backgound_procs(proc_list);
 
+		handle_prompt();
 		bzero(line, sizeof(line));
 		if (!handle_input(line, proc_list)) {
 			break;

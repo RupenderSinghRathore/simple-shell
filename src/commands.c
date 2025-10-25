@@ -1,4 +1,5 @@
 #include "ref.h"
+#include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -51,6 +52,8 @@ bool execute_command(pid_t pid, char **tokens, PROC_LIST *proc_list) {
 		freeToken(tokens);
 		free_proc_list(proc_list);
 		exit(1);
+	} else {
+		signal(SIGINT, handle_ctrl_c_running);
 	}
 	return true;
 }
