@@ -3,11 +3,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 // #include <unistd.h>
 
 bool preprocess_commands(char **tokens, PROC_LIST *proc_list, bool *background_process_flag) {
 	int last_idx = get_last_idx(tokens);
-	if (tokens[0] == NULL) {
+	if (last_idx == -1) {
 		return false;
 	} else if (strcmp(tokens[last_idx], "&") == 0) { // if equal then
 		if (proc_list->len == MAX_PROC_COUNT) {
@@ -42,12 +43,18 @@ bool preprocess_commands(char **tokens, PROC_LIST *proc_list, bool *background_p
 	return true;
 }
 
-bool execute_command(pid_t pid, char **tokens, PROC_LIST *proc_list) {
+bool execute_command(pid_t pid, char **tokens, PROC_LIST *proc_list, bool background_process_flag) {
 	if (pid == -1) {
 		printf("Error!!\n");
 		return false;
 	} else if (pid == 0) {
-		int ok = execvp(tokens[0], tokens);
+		if (background_process_flag) {
+			int ok = setpgid(0, getpid());
+			if (ok == -1) {
+				printf("error changing pgid of background process\n");
+			}
+		}
+		execvp(tokens[0], tokens);
 		printf("xsh: command not found: %s\n", tokens[0]);
 		freeToken(tokens);
 		free_proc_list(proc_list);

@@ -18,7 +18,7 @@ char **tokenize(char *line);
 bool handle_input(char *line, PROC_LIST *proc_list);
 void reap_backgound_procs(PROC_LIST *proc_list);
 bool preprocess_commands(char **tokens, PROC_LIST *proc_list, bool *background_process_flag);
-bool execute_command(pid_t pid, char **tokens, PROC_LIST *proc_list);
+bool execute_command(pid_t pid, char **tokens, PROC_LIST *proc_list, bool background_process_flag);
 void reaping_and_bookkeeping(pid_t pid, PROC_LIST *proc_list, bool background_process_flag);
 void handle_prompt();
 

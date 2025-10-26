@@ -1,6 +1,7 @@
 #include "ref.h"
 #include <stdbool.h>
 #include <stdlib.h>
+#include <unistd.h>
 
 PROC_LIST *init_proc_list(int n) {
 	PROC_LIST *proc_list = malloc(sizeof(*proc_list));

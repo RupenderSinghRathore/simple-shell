@@ -1,13 +1,13 @@
 .PHONY: all clean
 
 TARGET = ./bin/run
-CC     = gcc
-CFLAGS = -g -Iinclude
+CC     = clang
+CFLAGS = -fsanitize=address -Iinclude -Wall -g -Werror 
+# CFLAGS = -Iinclude -Wall -g -Werror 
 SRCDIR = src
 SRC = $(SRCDIR)/*.c
 
 all: $(TARGET)
-
 $(TARGET): $(SRC)
 	@mkdir -p bin
 	$(CC) $(CFLAGS) $(SRC) -o $(TARGET)
@@ -16,3 +16,4 @@ $(TARGET): $(SRC)
 clean:
 	@echo "Cleaning up..."
 	rm -f  vgcore*
+	# rm -f ./bin/run
