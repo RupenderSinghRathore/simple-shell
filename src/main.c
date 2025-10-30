@@ -8,8 +8,6 @@ int main() {
 	char line[MAX_INPUT_SIZE];
 	char **tokens = NULL;
 	PROC_LIST *proc_list = init_proc_list(MAX_PROC_COUNT);
-	int parent_pgid = getpgid(0);
-	printf("parent pgid: %d\n", parent_pgid);
 
 	while (1) {
 		signal(SIGINT, handle_ctrl_c);
